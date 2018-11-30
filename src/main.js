@@ -2,9 +2,17 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-// import router from './route'
+
+// Element 的引入
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
+import router from './route'
+import '../src/assets/css/index.css'
 // index.js可以省略
-import router from './route/index'
+// import router from './route/index'
+
+Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 

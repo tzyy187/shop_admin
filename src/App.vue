@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <!-- 路由出口 -->
+    <!-- app.vue是根组件,是出口,main.js是入口 -->
     <router-view></router-view>
   </div>
 </template>
@@ -12,4 +13,7 @@ export default {
 </script>
 
 <style>
+#app {
+  height: 100%;
+}
 </style>

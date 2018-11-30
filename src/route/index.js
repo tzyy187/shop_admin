@@ -17,5 +17,21 @@ const router = new Router({
   ]
 })
 
-// 导出router
+// 6 每个路由都会走index.js这个文件,所以把路由
+router.beforeEach((to, from, next) => {
+  // console.log('导航执行了')
+  // console.log('to:', to)
+  // console.log('from', from)
+  if (to.path === '/login') {
+    return next()
+  }
+  const token = localStorage.getItem('token')
+  if (token) {
+    next()
+  } else {
+    next('/login')
+  }
+})
+
+// 导出router,在main.js中导入
 export default router
