@@ -103,7 +103,7 @@ export default {
     },
     // 删除功能
     async delUser(id) {
-      // console.log('id:', id)
+      console.log('id:', id)
 
       // ...................点击取消之后发现会报错.....................
       try {
