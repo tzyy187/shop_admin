@@ -1,0 +1,67 @@
+<div class="rooter">
+
+  <!-- 1 面包屑导航 -->
+  <el-breadcrumb separator-class="el-icon-arrow-right" class="Breadcrumb ">
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+    <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+  </el-breadcrumb>
+
+  <!-- 2 搜索框 -->
+  <el-row :gutter="20">
+    <!-- 左侧搜索框 -->
+    <el-col :span="6">
+      <!-- 把 margin-top: 15px改成0-->
+      <div style="margin-top: 0px;">
+        <el-input placeholder="请输入内容" class="input-with-select" v-model="content">
+          <el-button slot="append" @click='search' icon="el-icon-search"></el-button>
+        </el-input>
+      </div>
+    </el-col>
+    <!-- 右侧添加用户按钮 -->
+    <el-col :span="6">
+      <el-button type="success" plain>添加用户</el-button>
+    </el-col>
+  </el-row>
+  <!-- 表格 -->
+  <!-- switch状态改变 -->
+  <el-table :data="tableData" style="width: 100%">
+    <el-table-column prop="username" label="姓名" width="180">
+    </el-table-column>
+    <el-table-column prop="email" label="邮箱" width="180">
+    </el-table-column>
+    <el-table-column prop="mobile" label="电话">
+    </el-table-column>
+    <el-table-column label="用户状态">
+      <!-- 自定义列模板 -->
+      <template slot-scope="scope">
+        <!-- scope.row : 当前行 -->
+        <!-- scope.row.mg_state:当前行的状态 -->
+        <el-switch v-model=" scope.row.mg_state" @change="changestatus(scope.row)">
+        </el-switch>
+      </template>
+    </el-table-column>
+    <el-table-column label="操作">
+      <!-- 自定义列模板 -->
+      <template slot-scope="scope">
+        <el-row>
+          <el-button type="primary" icon="el-icon-edit" plain size="small">
+          </el-button>
+
+          <!-- 通过scop.row.id获取当前行的id并作物参数传递给 -->
+          <el-button type="danger" icon="el-icon-delete" plain size="small" @click="delUser(scope.row.id)">
+
+          </el-button>
+          <el-button type="success" plain size="small">成功按钮</el-button>
+        </el-row>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!-- 分页 -->
+  <el-pagination background layout="prev, pager, next" :total="total" :page-size="pagesize" :current-page="pagenum"
+    @current-change="changePage">
+  </el-pagination>
+
+
+</div>
