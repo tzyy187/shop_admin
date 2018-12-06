@@ -16,7 +16,7 @@
     </el-header>
     <el-container>
       <el-aside width="200px">
-        <el-menu default-active="2" class="home-aside" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :router="true" index="1">
+        <el-menu default-active="2" class="home-aside" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :router="true" index="1"    :unique-opened = 'true'>
 
           <!-- 第一个菜单： -->
           <el-submenu index="/users">

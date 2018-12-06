@@ -2,6 +2,7 @@
 import axios from 'axios'
 export default {
   created() {
+    this.getAllRoles()
     this.getUserList()
     // axios
     //   .get('http://localhost:8888/api/private/v1/users', {
@@ -76,7 +77,16 @@ export default {
         email: '',
         mobile: '',
         id: ''
-      }
+      },
+      assignFormVisible: false,
+      assignuserform: {
+        name: '',
+        // 当前用户的角色id
+        rid: -1,
+        userId: -1
+      },
+      options: []
+      // value: ''
     }
   },
   methods: {
@@ -107,7 +117,14 @@ export default {
         this.pagenum = curpage
       }
     },
-    // 封装获取列表数据
+    // 获取角色列表数据
+    async getAllRoles() {
+      const res = await this.$http.get('roles')
+      // console.log('res', res)
+      // 把res.data.data数组赋值给options
+      this.options = res.data.data
+    },
+    // 1 封装获取列表数据
     // getUserList(pagenum, query, pagesize) {
     //   axios
     //     .get('http://localhost:8888/api/private/v1/users', {
@@ -138,13 +155,13 @@ export default {
       //在这里传的参数this.content是因为当在搜索内容的时候, 如果点击第二页的时候, 如果不传该参数的话,就会重新渲染页面, 变成3页了,
       this.getUserList(page, this.content)
     },
-    // 查询功能
+    // 2 查询功能
     search() {
       // console.log(this.content)
       // 调用封装好的方法
       this.getUserList(1, this.content)
     },
-    // 删除功能
+    // 3 删除功能
     async delUser(id) {
       console.log('id:', id)
 
@@ -183,7 +200,7 @@ export default {
       //     }
       //   })
     },
-    // 修改用户状态功能
+    // 4 修改用户状态功能
     // changestatus(row) {
     //   // console.log('id:', id)
     //   // 发现又是无效token
@@ -240,11 +257,11 @@ export default {
         })
       }
     },
-    // 添加用户
+    // 5 添加用户
     addUser() {
       this.dialogFormVisible = true
     },
-    // 确定添加数据
+    // 6 确定添加数据
     async ensureAdd() {
       // const res = await this.$refs.adduserform.validate()
       // console.log('res', res)// false时会报错==> 解决报错用try catch
@@ -268,7 +285,7 @@ export default {
 
       this.$refs.adduserform.resetFields()
     },
-    // 关闭对话框 ==> 表单重置
+    // 7 关闭对话框 ==> 表单重置
     closeAddUsers() {
       this.$refs.adduserform.resetFields()
     },
@@ -280,7 +297,7 @@ export default {
       }
       // console.log(this.edituserform)
     },
-    // 点击确定修改=>发送请求=>关闭弹框=>重新渲染页面
+    // 8 点击确定修改=>发送请求=>关闭弹框=>重新渲染页面
     async ensureEdit() {
       const { id, email, mobile } = this.edituserform
       const res = await this.$http.put(`/users/${id}`, {
@@ -290,6 +307,35 @@ export default {
       // console.log(res)
       this.editFormVisible = false
       this.getUserList(1, this.content)
+    },
+    // 9 点击分配角色
+    /**
+     * 1 弹出对话框
+     * 2
+     */
+    async Assign(rowId) {
+      this.assignFormVisible = true
+      // console.log('rowId', rowId)
+      const res = await this.$http.get(`users/${rowId}`)
+      // console.log('res', res)
+      let { username, id, rid } = res.data.data
+      this.assignuserform.name = username
+      rid = rid === -1 ? '' : rid
+      this.assignuserform.rid = rid
+      this.assignuserform.userId = id
+    },
+    // 10 点击确定, 进行角色授权 看文档1.37
+    async updataRoles() {
+      const { userId, rid } = this.assignuserform
+      const res = await this.$http.put(`users/${userId}/role`, { rid })
+      // console.log('res', res)
+      // 关闭对话框
+      this.assignFormVisible = false
+      // 消息提示
+      this.$message({
+        type: 'success',
+        message: res.data.meta.msg
+      })
     }
   }
 }

@@ -52,7 +52,7 @@
           <el-button type="danger" icon="el-icon-delete" plain size="small" @click="delUser(scope.row.id)">
 
           </el-button>
-          <el-button type="success" plain size="small">成功按钮</el-button>
+          <el-button type="success" plain size="small" @click="Assign(scope.row.id)">分配角色</el-button>
         </el-row>
       </template>
     </el-table-column>
@@ -105,6 +105,24 @@
     </div>
   </el-dialog>
 
+  <!--分配角色的弹框 -->
+  <el-dialog title="编辑用户" :visible.sync="assignFormVisible">
+    <el-form :model="assignuserform" label-width="60px">
+      <el-form-item label="用户名">
 
+        <el-tag type="info">{{assignuserform.name }}</el-tag>
+      </el-form-item>
+      <el-form-item label="角色">
+        <el-select v-model="assignuserform.rid" placeholder="请选择">
+          <el-option v-for="item in options" :key="item.id" :label="item.roleName" :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="assignFormVisible = false">取 消</el-button>
+      <el-button type="primary" @click="updataRoles">修 改 </el-button>
+    </div>
+  </el-dialog>
 
 </div>
