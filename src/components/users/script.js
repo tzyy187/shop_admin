@@ -33,7 +33,50 @@ export default {
       total: 0,
       pagesize: 2,
       pagenum: 1,
-      content: ''
+      content: '',
+
+      dialogFormVisible: false,
+      adduserform: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
+      },
+      addrules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 3, max: 12, message: '长度在 3 到 12个字符', trigger: 'blur' }
+        ],
+        //emial和mobile不是必填项, 所以required: true,删掉
+        //Pattern
+        email: [
+          { message: 'email', trigger: 'blur' },
+          {
+            pattern: /^\w+@\w+(\.[a-zA-Z]{2,3}){1,2}$/,
+            message: '邮箱错误',
+            trigger: 'blur'
+          }
+        ],
+        mobile: [
+          { message: '请输入手机号', trigger: 'blur' },
+          {
+            pattern: /^1\d{4}$/,
+            message: '手机号码错误',
+            trigger: 'blur'
+          }
+        ]
+      },
+      editFormVisible: false,
+      edituserform: {
+        username: '',
+        email: '',
+        mobile: '',
+        id: ''
+      }
     }
   },
   methods: {
@@ -196,6 +239,57 @@ export default {
           message: meta.msg
         })
       }
+    },
+    // 添加用户
+    addUser() {
+      this.dialogFormVisible = true
+    },
+    // 确定添加数据
+    async ensureAdd() {
+      // const res = await this.$refs.adduserform.validate()
+      // console.log('res', res)// false时会报错==> 解决报错用try catch
+
+      try {
+        await this.$refs.adduserform.validate()
+        const res = await this.$http.post('/users', this.adduserform)
+        // console.log('res', res)
+        const { meta } = res.data
+        if (meta.status === 201) {
+          this.message({
+            type: 'success',
+            message: meta.msg
+          })
+        }
+      } catch (e) {}
+
+      // 关闭对话框,重新渲染页面,重置表单
+      this.dialogFormVisible = false
+      this.getUserList(1, this.content)
+
+      this.$refs.adduserform.resetFields()
+    },
+    // 关闭对话框 ==> 表单重置
+    closeAddUsers() {
+      this.$refs.adduserform.resetFields()
+    },
+    editUsers(row) {
+      this.editFormVisible = true
+      // console.log('row', row)
+      for (var key in this.edituserform) {
+        this.edituserform[key] = row[key]
+      }
+      // console.log(this.edituserform)
+    },
+    // 点击确定修改=>发送请求=>关闭弹框=>重新渲染页面
+    async ensureEdit() {
+      const { id, email, mobile } = this.edituserform
+      const res = await this.$http.put(`/users/${id}`, {
+        email,
+        mobile
+      })
+      // console.log(res)
+      this.editFormVisible = false
+      this.getUserList(1, this.content)
     }
   }
 }

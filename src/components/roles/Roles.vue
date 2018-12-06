@@ -1,10 +1,6 @@
-<template>
-  <h1>roles组件</h1>
+<template src="./template.html">
 </template>
-
-<script>
-export default {}
+<script src="./script.js">
 </script>
-
-<style>
+<style src="./style.less" scoped  lang="less">
 </style>

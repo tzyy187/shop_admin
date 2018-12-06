@@ -10,6 +10,8 @@ import Login from '../components/login/Login.vue'
 // 导入home的两个组件
 import Users from '../components/users/Users.vue'
 import Roles from '../components/roles/Roles.vue'
+// 导入权限列表
+import Rights from '../components/rights/Rights.vue'
 
 // 3 将路由通过use注册到Vue中,即告诉Vue要使用Router
 Vue.use(Router)
@@ -19,12 +21,14 @@ const router = new Router({
   routes: [
     { path: '/', redirect: '/home' },
     { path: '/login', component: Login },
+
     {
       path: '/home',
       component: Home,
       children: [
         { path: '/users', component: Users },
-        { path: '/roles', component: Roles }
+        { path: '/roles', component: Roles },
+        { path: '/rights', component: Rights }
       ]
     }
   ]

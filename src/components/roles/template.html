@@ -1,0 +1,88 @@
+<div class="roles">
+
+  <!-- 1 面包屑导航 -->
+  <el-breadcrumb separator-class="el-icon-arrow-right" class="Breadcrumb ">
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>权限管理</el-breadcrumb-item>
+    <el-breadcrumb-item>角色列表</el-breadcrumb-item>
+  </el-breadcrumb>
+
+  <!-- 2  -->
+  <el-table :data="rolesList" stripe style="width: 100%" stripe>
+    <!-- 展开行 -->
+    <el-table-column type="expand">
+      <template slot-scope="scope">
+        <span v-if="scope.row.children.length === 0 ">暂无权限</span>
+        <!-- 遍历一级菜单, -->
+        <!-- scope.row{} => .children[] =>.children[] => .children[] -->
+        <el-row v-else v-for="level1 in scope.row.children" :key="level1.id" class="level1">
+          <!-- 1 遍历生成一级菜单,有几个{},生成几个row -->
+          <el-col :span="4">
+            <el-tag closable type="" @close="closeTags(scope.row.id,level1.id)">
+              {{ level1.authName}}
+            </el-tag>
+            <i class="el-icon-arrow-right"></i>
+          </el-col>
+          <!-- 2 遍历二级菜单 -->
+          <el-col :span="20">
+            <el-row v-for="level2 in level1.children" :key='level2.id' class="level2">
+              <el-col :span="6">
+                <el-tag closable type="success" @close="closeTags(scope.row.id,level2.id)">
+                  {{ level2.authName}}
+                </el-tag>
+                <i class="el-icon-arrow-right"></i>
+              </el-col>
+              <!-- 3 遍历三级菜单 -->
+              <el-col :span="18">
+
+                <el-tag closable type="warning" v-for="level3 in level2.children" :key='level3.id' class="level3"
+                  @close="closeTags(scope.row.id,level3.id)">
+                  {{ level3.authName}}
+                </el-tag>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+      </template>
+    </el-table-column>
+    <!-- type="index" 表示该列为索引列 -->
+    <el-table-column type="index" :index="getIndex" width="80">
+    </el-table-column>
+    <!--  -->
+    <el-table-column prop="roleName" label="角色名称" width="140">
+    </el-table-column>
+    <!--  -->
+    <el-table-column prop="roleDesc" label="描述" width="160">
+    </el-table-column>
+    <!--  -->
+    <el-table-column prop="address" label="操作">
+      <!-- 自定义列模板 -->
+      <template slot-scope="scope">
+        <el-row>
+          <el-button type="primary" icon="el-icon-edit" plain size="small" @click="editRights">
+          </el-button>
+          <!-- 通过scop.row.id获取当前行的id并作物参数传递给 -->
+          <el-button type="danger" icon="el-icon-delete" plain size="small" @click="delRights">
+
+          </el-button>
+          <el-button type="success" plain size="small" @click="showAssign(scope.row)">分配权限</el-button>
+        </el-row>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <!-- 点击f分配权限, 弹出的 ==> 渲染tree -->
+  <el-dialog title="分配权限" :visible.sync="isShowAssign" @click="getTree">
+
+    <el-tree :data="showAllChecked" show-checkbox node-key="id" :props="defaultProps" :default-expand-all=true ref="tree">
+    </el-tree>
+
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="isShowAssign = false">取 消</el-button>
+      <el-button type="primary" @click="enSureAdd">确 定</el-button>
+    </div>
+  </el-dialog>
+
+
+
+</div>
